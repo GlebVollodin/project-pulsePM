@@ -3,14 +3,50 @@ from django.urls import include, path
 from . import views
 
 urlpatterns = [
-    path("auth/login", views.LoginView.as_view(), name="login"),
-    path("auth/sign-up", views.RegistrationView.as_view(), name="registration"),
-    path("", views.HomePageView.as_view(), name="index"),
+    path(
+        "auth/",
+        include(
+            [
+                path(
+                    "login/",
+                    views.LoginView.as_view(),
+                    name="login"
+                ),
+                path(
+                    'signup/',
+                     views.RegistrationView.as_view(),
+                    name="signup"
+                ),
+                path(
+                    "logout/",
+                    views.logout_view,
+                    name="logout"
+                )
+            ]
+        )
+    ),
+    path(
+        "",
+         include(
+             [
+                 path(
+                     "",
+                     views.HomePageView.as_view(),
+                     name="index"),
+                 # path(
+                 #     "general-statistic/",
+                 #     views.GeneralReportView.as_view(),
+                 #     name="general_statistic"),
+             ]
+         )),
     path(
         "organization/<int:organization_id>/",
         include(
             [
-                path("", views.OrganizationView.as_view(), name="organization"),
+                path(
+                    "",
+                    views.OrganizationView.as_view(),
+                    name="organization"),
                 path(
                     "member/<int:member_id>/",
                     include(
@@ -29,6 +65,11 @@ urlpatterns = [
                     ),
                 ),
                 path(
+                    "delete/",
+                    views.DeleteOrganization.as_view(),
+                    name="organization_delete"
+                ),
+                path(
                     "workspace/<int:workspace_id>/",
                     include(
                         [
@@ -39,9 +80,19 @@ urlpatterns = [
                                 name="workspace_delete",
                             ),
                             path(
-                                "workitem/<int:pk>",
-                                views.WorkItemView.as_view(),
-                                name="workitem_detail",
+                                "workitem/<int:workitem_id>/",
+                                include([
+                                    path(
+                                        "",
+                                        views.WorkItemView.as_view(),
+                                        name="workitem"
+                                    ),
+                                    path(
+                                        "delete/",
+                                        views.DeleteWorkItem.as_view(),
+                                        name="workitem_delete"
+                                    ),
+                                ])
                             ),
                         ]
                     ),
