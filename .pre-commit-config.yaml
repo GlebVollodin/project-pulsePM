@@ -1,0 +1,37 @@
+default_install_hook_types: [pre-commit, pre-push]
+fail_fast: false
+
+repos:
+  - repo: local
+    hooks:
+      - id: backend-check
+        name: backend formatting, lint, and types
+        entry: make check-backend
+        language: system
+        pass_filenames: false
+        files: ^(backend/|Makefile$|\.pre-commit-config\.yaml$)
+        stages: [pre-commit]
+
+      - id: frontend-check
+        name: frontend formatting, lint, and types
+        entry: make check-frontend
+        language: system
+        pass_filenames: false
+        files: ^(frontend/|Makefile$|\.pre-commit-config\.yaml$)
+        stages: [pre-commit]
+
+      - id: backend-test
+        name: backend tests
+        entry: make test-backend
+        language: system
+        pass_filenames: false
+        files: ^(backend/|Makefile$|\.pre-commit-config\.yaml$)
+        stages: [pre-push]
+
+      - id: frontend-test
+        name: frontend tests
+        entry: make test-frontend
+        language: system
+        pass_filenames: false
+        files: ^(frontend/|Makefile$|\.pre-commit-config\.yaml$)
+        stages: [pre-push]
